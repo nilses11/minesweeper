@@ -1,25 +1,38 @@
 import ms
 from curses import wrapper
 
+def putLineToScr(stdscr, line, linexp, fl):
+	#stdscr.addstr(line)
+	for c in range(len(line)):
+		if linexp[c]:
+			stdscr.addch(line[c])
+		elif fl[c]:
+			stdscr.addch('!')
+		else:
+			stdscr.addch(' ')
+	stdscr.addch('\n')
+
+
+
+
+
+
 
 def main(stdscr):
 	loop = True
 	status = 0
 	x = 0
 	y = 0
-	print 'Commands:'
-	print '    o - open'
-	print '    f - flag'
-	print '    u - unflag'
-	print '    e - open all nearby fields that are not flagged'
-	print '    q - quit'
-
-
-	#stdscr.clear()
+	stdscr.addstr('Commands:')
+	stdscr.addstr('  o - open\n')
+	stdscr.addstr('  f - flag\n')
+	stdscr.addstr('  u - unflag\n')
+	stdscr.addstr('  e - open all nearby fields that are not flagged\n')
+	stdscr.addstr('  q - quit\n')
 
 	while loop:
 		try:
-			print x, y
+			#stdscr.addstr(str(x)+str(y))
 			c = stdscr.getkey()
 			stdscr.clear()
 			if c == 'o':
@@ -50,7 +63,11 @@ def main(stdscr):
 				print 'You just lost!'
 				loop = False
 			else:
-				#ms.printCurrentState(ms.board)
+				board = ms.buildCurrentState(ms.board)
+				for n in range(len(board)):
+					putLineToScr(stdscr, board[n], ms.explored[n], 
+ms.flagged[n])
+				stdscr.addch(y,x, ' ')
 				if ms.checkIsFinished():
 					print 'You won!'
 					loop = False
